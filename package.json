@@ -1,0 +1,26 @@
+{
+  "name": "rewarding-platform",
+  "version": "1.0.0",
+  "description": "Multi-project token distribution platform with Merkle-proof whitelisting",
+  "scripts": {
+    "test":    "hardhat test",
+    "test:gas":"REPORT_GAS=true hardhat test",
+    "compile": "hardhat compile",
+    "deploy:local":   "hardhat run scripts/deploy.js --network localhost",
+    "deploy:bot":     "hardhat run scripts/deploy.js --network botchain",
+    "deploy:bot-test":"hardhat run scripts/deploy.js --network botchain_testnet",
+    "deploy:celo":    "hardhat run scripts/deploy.js --network celo",
+    "node":    "hardhat node",
+    "coverage":"hardhat coverage"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+    "dotenv": "^16.3.1",
+    "hardhat": "^2.19.0",
+    "keccak256": "^1.0.6",
+    "merkletreejs": "^0.3.11"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^5.0.0"
+  }
+}
