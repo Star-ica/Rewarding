@@ -1,0 +1,1750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<title>Rewarding — Token Distribution Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet"/>
+<style>
+/* ═══════════════════════════════════════════════════
+   DESIGN SYSTEM
+   Brand: deep navy + electric violet + acid lime
+   Typography: Syne (display) + DM Sans (body)
+   Character: precision-tech, not generic SaaS
+════════════════════════════════════════════════════ */
+:root {
+  --bg:          #09090F;
+  --surface:     #111120;
+  --surface2:    #18182A;
+  --border:      #252540;
+  --border2:     #32326A;
+  --text:        #F0F0FF;
+  --text2:       #9090B8;
+  --text3:       #5555AA;
+  --violet:      #7C5CFC;
+  --violet2:     #9B7FFE;
+  --lime:        #C8FF57;
+  --lime2:       #A8E040;
+  --amber:       #FFB340;
+  --red:         #FF5566;
+  --green:       #38E2A0;
+  --radius:      12px;
+  --radius2:     8px;
+  --header-h:    64px;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg:       #F5F5FF;
+    --surface:  #FFFFFF;
+    --surface2: #EDEDFA;
+    --border:   #DDDDF0;
+    --border2:  #BEBEE8;
+    --text:     #0A0A1E;
+    --text2:    #44446A;
+    --text3:    #9999C8;
+    --violet:   #6246E5;
+    --violet2:  #7C60FF;
+  }
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:"DM Sans",system-ui,sans-serif;
+  font-size:15px;
+  line-height:1.6;
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4,h5{font-family:"Syne",sans-serif;line-height:1.2;font-weight:700}
+a{color:var(--violet2);text-decoration:none}
+a:hover{text-decoration:underline}
+button{cursor:pointer;border:none;font-family:inherit}
+input,textarea,select{font-family:inherit;font-size:14px;background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:var(--radius2);padding:10px 14px;width:100%;outline:none;transition:border-color .15s}
+input:focus,textarea:focus,select:focus{border-color:var(--violet)}
+select option{background:var(--surface)}
+textarea{resize:vertical;min-height:88px}
+img{max-width:100%;display:block}
+
+/* ── Layout ──────────────────────────────────────── */
+#app{display:flex;flex-direction:column;min-height:100vh}
+#header{
+  position:sticky;top:0;z-index:100;
+  height:var(--header-h);
+  background:rgba(9,9,15,.85);
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:0;padding:0 24px;
+}
+.logo{
+  font-family:"Syne",sans-serif;font-weight:800;font-size:1.3rem;
+  color:var(--text);letter-spacing:-.02em;margin-right:auto;
+  display:flex;align-items:center;gap:10px;cursor:pointer
+}
+.logo-mark{
+  width:32px;height:32px;border-radius:8px;
+  background:linear-gradient(135deg,var(--violet),var(--lime));
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;font-weight:900;color:#000
+}
+nav{display:flex;gap:4px;align-items:center}
+.nav-btn{
+  background:none;color:var(--text2);font-size:14px;font-family:"DM Sans",sans-serif;
+  padding:6px 14px;border-radius:var(--radius2);transition:all .15s;white-space:nowrap
+}
+.nav-btn:hover,.nav-btn.active{background:var(--surface2);color:var(--text)}
+.connect-btn{
+  margin-left:12px;
+  background:var(--violet);color:#fff;
+  padding:8px 18px;border-radius:var(--radius2);font-size:14px;font-weight:500;
+  transition:background .15s;white-space:nowrap
+}
+.connect-btn:hover{background:var(--violet2)}
+.connect-btn.connected{background:var(--surface2);color:var(--green);border:1px solid var(--border)}
+
+#main{flex:1;padding:0 24px 64px}
+.container{max-width:1180px;margin:0 auto}
+
+/* ── Pages ───────────────────────────────────────── */
+.page{display:none}
+.page.active{display:block}
+
+/* ── Hero (Landing) ──────────────────────────────── */
+.hero{
+  padding:100px 0 80px;
+  display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center
+}
+.hero-eyebrow{
+  font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--lime);margin-bottom:20px;display:flex;align-items:center;gap:8px
+}
+.hero-eyebrow::before{
+  content:"";width:24px;height:2px;background:var(--lime);border-radius:2px
+}
+.hero h1{font-size:clamp(2.4rem,5vw,4rem);font-weight:800;line-height:1.08;letter-spacing:-.03em}
+.hero h1 span{
+  background:linear-gradient(90deg,var(--violet),var(--lime));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text
+}
+.hero-desc{color:var(--text2);font-size:1.05rem;margin:20px 0 36px;max-width:460px;line-height:1.65}
+.hero-cta{display:flex;gap:12px;flex-wrap:wrap}
+.btn-primary{
+  background:var(--violet);color:#fff;padding:12px 28px;border-radius:var(--radius);
+  font-size:15px;font-weight:600;transition:all .15s;display:inline-flex;align-items:center;gap:8px
+}
+.btn-primary:hover{background:var(--violet2);transform:translateY(-1px)}
+.btn-outline{
+  background:none;color:var(--text);padding:11px 24px;
+  border:1px solid var(--border2);border-radius:var(--radius);
+  font-size:15px;font-weight:500;transition:all .15s
+}
+.btn-outline:hover{border-color:var(--violet);color:var(--violet2)}
+.btn-sm{padding:8px 18px;font-size:13px;border-radius:var(--radius2)}
+.btn-danger{background:var(--red)!important}
+.btn-danger:hover{opacity:.85}
+.btn-ghost{background:var(--surface2);color:var(--text2);padding:8px 16px;border-radius:var(--radius2);font-size:13px;transition:all .15s}
+.btn-ghost:hover{background:var(--border);color:var(--text)}
+
+.hero-visual{
+  background:var(--surface);border:1px solid var(--border);border-radius:16px;
+  padding:28px;position:relative;overflow:hidden
+}
+.hero-visual::before{
+  content:"";position:absolute;inset:-1px;border-radius:16px;
+  background:linear-gradient(135deg,var(--violet)20,transparent 60%,var(--lime)10);
+  opacity:.12;pointer-events:none
+}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
+.stat-card{
+  background:var(--surface2);border-radius:var(--radius2);padding:16px;
+  border:1px solid var(--border)
+}
+.stat-num{font-family:"Syne",sans-serif;font-size:1.8rem;font-weight:800;color:var(--text)}
+.stat-num.violet{color:var(--violet2)}
+.stat-num.lime{color:var(--lime)}
+.stat-num.green{color:var(--green)}
+.stat-label{font-size:12px;color:var(--text3);margin-top:2px}
+.mini-campaign{
+  background:var(--surface2);border-radius:var(--radius2);padding:14px 16px;
+  display:flex;align-items:center;gap:12px;border:1px solid var(--border)
+}
+.mini-avatar{
+  width:36px;height:36px;border-radius:8px;flex-shrink:0;
+  background:linear-gradient(135deg,var(--violet),var(--lime));
+  display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#000
+}
+.mini-name{font-size:13px;font-weight:600;color:var(--text)}
+.mini-sub{font-size:11px;color:var(--text3)}
+.mini-badge{margin-left:auto;font-size:11px;font-weight:600;padding:3px 8px;border-radius:4px}
+.badge-active{background:#38E2A020;color:var(--green)}
+.badge-paused{background:#FFB34020;color:var(--amber)}
+.badge-closed{background:#FF556620;color:var(--red)}
+.badge-expired{background:#5555AA20;color:var(--text3)}
+.badge-merkle{background:#7C5CFC20;color:var(--violet2)}
+.badge-direct{background:#C8FF5720;color:var(--lime2)}
+
+/* ── Stats bar ───────────────────────────────────── */
+.stats-bar{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  border:1px solid var(--border);border-radius:var(--radius);
+  background:var(--surface);margin-bottom:64px;overflow:hidden
+}
+.stats-item{padding:24px;border-right:1px solid var(--border)}
+.stats-item:last-child{border-right:none}
+.stats-val{font-family:"Syne",sans-serif;font-size:2rem;font-weight:800}
+
+/* ── Section headers ─────────────────────────────── */
+.section-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:28px;padding-top:48px}
+.section-title{font-size:1.6rem;font-weight:800;letter-spacing:-.02em}
+.section-subtitle{color:var(--text2);font-size:14px;margin-top:4px}
+
+/* ── Cards / Grid ────────────────────────────────── */
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+.card{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  padding:20px;transition:border-color .2s,transform .15s
+}
+.card:hover{border-color:var(--border2)}
+.card-hover:hover{transform:translateY(-2px);cursor:pointer}
+.card-header{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.project-logo{
+  width:44px;height:44px;border-radius:10px;flex-shrink:0;
+  background:linear-gradient(135deg,var(--violet),var(--lime));
+  display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:#000;
+  font-family:"Syne",sans-serif
+}
+.project-logo img{width:100%;height:100%;object-fit:cover;border-radius:inherit}
+.card-title{font-size:15px;font-weight:700;color:var(--text)}
+.card-meta{font-size:12px;color:var(--text3)}
+
+/* ── Progress bar ────────────────────────────────── */
+.progress-wrap{margin:12px 0 8px}
+.progress-label{display:flex;justify-content:space-between;font-size:12px;color:var(--text2);margin-bottom:6px}
+.progress-track{background:var(--surface2);border-radius:4px;height:6px;overflow:hidden}
+.progress-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--violet),var(--lime));transition:width .6s ease}
+
+/* ── Campaign card ───────────────────────────────── */
+.campaign-card .tags{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0}
+.campaign-card .allocation{
+  font-family:"Syne",sans-serif;font-size:1.3rem;font-weight:800;color:var(--text);
+  margin:4px 0 2px
+}
+.campaign-card .token-name{font-size:12px;color:var(--text3)}
+.time-left{
+  display:flex;align-items:center;gap:4px;font-size:12px;
+  color:var(--text2);margin-top:10px
+}
+
+/* ── Form layout ─────────────────────────────────── */
+.form-page{max-width:680px}
+.form-section{margin-bottom:32px}
+.form-section-title{
+  font-family:"Syne",sans-serif;font-size:14px;font-weight:700;
+  color:var(--text2);text-transform:uppercase;letter-spacing:.06em;
+  margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid var(--border)
+}
+.field{margin-bottom:16px}
+.field label{display:block;font-size:13px;font-weight:500;color:var(--text2);margin-bottom:6px}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.field-hint{font-size:12px;color:var(--text3);margin-top:4px}
+.field-error{font-size:12px;color:var(--red);margin-top:4px}
+
+/* ── Dashboard layout ────────────────────────────── */
+.dashboard-grid{display:grid;grid-template-columns:280px 1fr;gap:24px;padding-top:32px}
+.sidebar{position:sticky;top:calc(var(--header-h) + 16px);height:fit-content}
+.sidebar-menu{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:8px}
+.sidebar-item{
+  display:flex;align-items:center;gap:10px;padding:10px 14px;
+  border-radius:var(--radius2);font-size:14px;color:var(--text2);cursor:pointer;transition:all .15s
+}
+.sidebar-item:hover{background:var(--surface2);color:var(--text)}
+.sidebar-item.active{background:var(--violet)15;color:var(--violet2);font-weight:500}
+.sidebar-item .icon{width:16px;text-align:center;flex-shrink:0}
+
+/* ── Table ───────────────────────────────────────── */
+.table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+table{width:100%;border-collapse:collapse}
+th{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);padding:12px 16px;border-bottom:1px solid var(--border);text-align:left;white-space:nowrap}
+td{padding:14px 16px;font-size:13px;border-bottom:1px solid var(--border);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--surface2)}
+.mono{font-family:monospace;font-size:12px;color:var(--text2)}
+
+/* ── Merkle manager ──────────────────────────────── */
+.merkle-box{
+  background:var(--surface);border:2px dashed var(--border2);border-radius:var(--radius);
+  padding:40px;text-align:center;cursor:pointer;transition:all .2s
+}
+.merkle-box:hover,.merkle-box.drag{border-color:var(--violet);background:var(--surface2)}
+.merkle-box h3{font-size:1rem;margin:12px 0 6px}
+.merkle-box p{font-size:13px;color:var(--text3)}
+.root-display{
+  background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius2);
+  padding:14px 16px;font-family:monospace;font-size:12px;color:var(--lime);
+  word-break:break-all;margin:16px 0
+}
+.proof-table-wrap{max-height:360px;overflow-y:auto}
+
+/* ── Claim dashboard ─────────────────────────────── */
+.claim-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  padding:24px;display:flex;gap:24px;align-items:flex-start
+}
+.claim-card .left{flex:1}
+.claim-card .right{display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+.claim-amount{font-family:"Syne",sans-serif;font-size:2rem;font-weight:800;line-height:1}
+.claim-status{
+  display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;
+  padding:4px 10px;border-radius:20px
+}
+.status-eligible{background:#38E2A020;color:var(--green)}
+.status-claimed{background:#7C5CFC20;color:var(--violet2)}
+.status-not-eligible{background:#FF556620;color:var(--red)}
+
+/* ── Toast ───────────────────────────────────────── */
+#toast{
+  position:fixed;bottom:28px;right:28px;z-index:9999;
+  display:flex;flex-direction:column;gap:8px;pointer-events:none
+}
+.toast-item{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius2);padding:14px 20px;font-size:14px;
+  display:flex;align-items:center;gap:10px;min-width:300px;
+  box-shadow:0 8px 32px #00000080;
+  animation:slideIn .25s ease;pointer-events:all;cursor:pointer
+}
+.toast-item.success{border-color:var(--green)}
+.toast-item.error  {border-color:var(--red)}
+.toast-item.info   {border-color:var(--violet)}
+@keyframes slideIn{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:translateX(0)}}
+
+/* ── Modal ───────────────────────────────────────── */
+.modal-overlay{
+  position:fixed;inset:0;background:#00000080;backdrop-filter:blur(4px);
+  z-index:200;display:none;align-items:center;justify-content:center;padding:24px
+}
+.modal-overlay.open{display:flex}
+.modal{
+  background:var(--surface);border:1px solid var(--border);border-radius:16px;
+  padding:32px;max-width:520px;width:100%;max-height:90vh;overflow-y:auto;
+  position:relative
+}
+.modal h2{margin-bottom:4px}
+.modal-sub{font-size:14px;color:var(--text2);margin-bottom:24px}
+.modal-close{
+  position:absolute;top:16px;right:16px;
+  background:var(--surface2);border:1px solid var(--border);color:var(--text2);
+  width:28px;height:28px;border-radius:6px;font-size:16px;line-height:1;
+  display:flex;align-items:center;justify-content:center
+}
+.modal-close:hover{background:var(--border);color:var(--text)}
+
+/* ── Spinner ─────────────────────────────────────── */
+.spinner{
+  width:18px;height:18px;border:2px solid transparent;border-top-color:#fff;
+  border-radius:50%;animation:spin .6s linear infinite;display:inline-block
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── Alerts ──────────────────────────────────────── */
+.alert{padding:14px 16px;border-radius:var(--radius2);font-size:13px;margin-bottom:16px;line-height:1.5}
+.alert-info{background:#7C5CFC12;border:1px solid var(--violet);color:var(--violet2)}
+.alert-warn{background:#FFB34012;border:1px solid var(--amber);color:var(--amber)}
+.alert-success{background:#38E2A012;border:1px solid var(--green);color:var(--green)}
+
+/* ── Utility ─────────────────────────────────────── */
+.mt8{margin-top:8px}.mt16{margin-top:16px}.mt24{margin-top:24px}
+.mb8{margin-bottom:8px}.mb16{margin-bottom:16px}
+.flex{display:flex}.items-center{align-items:center}.gap8{gap:8px}.gap16{gap:16px}
+.text-sm{font-size:13px}.text-xs{font-size:12px}.text-muted{color:var(--text2)}
+.text-right{text-align:right}.text-lime{color:var(--lime)}.text-violet{color:var(--violet2)}
+.text-green{color:var(--green)}.text-red{color:var(--red)}.text-amber{color:var(--amber)}
+.font-mono{font-family:monospace}
+.hidden{display:none!important}
+.w-full{width:100%}
+.empty-state{padding:60px;text-align:center;color:var(--text3)}
+.empty-state .icon{font-size:2.5rem;margin-bottom:12px}
+.empty-state h3{font-size:1.1rem;color:var(--text2);margin-bottom:8px}
+
+/* ── Admin panel ─────────────────────────────────── */
+.admin-metric{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px
+}
+.admin-metric h4{font-size:12px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+.admin-metric .val{font-family:"Syne",sans-serif;font-size:2rem;font-weight:800}
+
+/* ── Responsive ──────────────────────────────────── */
+@media(max-width:900px){
+  .hero{grid-template-columns:1fr;padding:60px 0 40px}
+  .hero-visual{display:none}
+  .grid-3{grid-template-columns:repeat(2,1fr)}
+  .stats-bar{grid-template-columns:repeat(2,1fr)}
+  .stats-item:nth-child(2){border-right:none}
+  .dashboard-grid{grid-template-columns:1fr}
+  .sidebar{position:static}
+  nav .nav-btn{display:none}
+}
+@media(max-width:600px){
+  #header{padding:0 16px}
+  #main{padding:0 16px 48px}
+  .grid-3,.grid-2{grid-template-columns:1fr}
+  .stats-bar{grid-template-columns:1fr 1fr}
+  .hero h1{font-size:2rem}
+  .claim-card{flex-direction:column}
+  .field-row{grid-template-columns:1fr}
+}
+@media(prefers-reduced-motion:reduce){
+  *{animation-duration:.01ms!important;transition-duration:.01ms!important}
+}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- ═══════ HEADER ═══════ -->
+<header id="header">
+  <div class="logo" onclick="showPage('landing')">
+    <div class="logo-mark">R</div>
+    Rewarding
+  </div>
+  <nav>
+    <button class="nav-btn" onclick="showPage('explorer')">Campaigns</button>
+    <button class="nav-btn" onclick="showPage('projects')">Projects</button>
+    <button class="nav-btn" onclick="showPage('claim')">My Claims</button>
+    <button class="nav-btn" onclick="showPage('create-project')">Create</button>
+    <button class="nav-btn" onclick="showPage('admin')">Admin</button>
+  </nav>
+  <button class="connect-btn" id="connectBtn" onclick="connectWallet()">Connect Wallet</button>
+</header>
+
+<!-- ═══════ MAIN ═══════ -->
+<main id="main">
+<div class="container">
+
+<!-- ───── LANDING ───── -->
+<div id="page-landing" class="page active">
+  <div class="hero">
+    <div>
+      <div class="hero-eyebrow">Multi-Project Token Distribution</div>
+      <h1>Distribute tokens<br/>to the right<br/><span>wallets, on-chain.</span></h1>
+      <p class="hero-desc">
+        Projects create campaigns, upload whitelists and distribute tokens directly to eligible wallets.
+        Merkle-proof verified. Fully decentralised. No backend required.
+      </p>
+      <div class="hero-cta">
+        <button class="btn-primary" onclick="showPage('create-project')">Launch a Campaign</button>
+        <button class="btn-outline" onclick="showPage('explorer')">Browse Campaigns</button>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="stat-grid">
+        <div class="stat-card"><div class="stat-num violet" id="heroProjects">—</div><div class="stat-label">Active projects</div></div>
+        <div class="stat-card"><div class="stat-num lime" id="heroCampaigns">—</div><div class="stat-label">Campaigns live</div></div>
+        <div class="stat-card"><div class="stat-num green" id="heroClaimed">—</div><div class="stat-label">Claims processed</div></div>
+        <div class="stat-card"><div class="stat-num" id="heroTokens">—</div><div class="stat-label">Tokens distributed</div></div>
+      </div>
+      <div id="heroFeed" style="display:flex;flex-direction:column;gap:8px"></div>
+    </div>
+  </div>
+
+  <div class="stats-bar">
+    <div class="stats-item"><div class="stats-val text-violet" id="statProjects">0</div><div class="stat-label mt8">Projects registered</div></div>
+    <div class="stats-item"><div class="stats-val text-lime" id="statCampaigns">0</div><div class="stat-label mt8">Total campaigns</div></div>
+    <div class="stats-item"><div class="stats-val text-green" id="statClaims">0</div><div class="stat-label mt8">Total claims</div></div>
+    <div class="stats-item"><div class="stats-val" id="statFee">—</div><div class="stat-label mt8">Platform fee</div></div>
+  </div>
+
+  <div class="section-header">
+    <div><div class="section-title">Featured Campaigns</div><div class="section-subtitle">Currently accepting claims</div></div>
+    <button class="btn-outline btn-sm" onclick="showPage('explorer')">View all</button>
+  </div>
+  <div class="grid-3" id="featuredCampaigns">
+    <div class="empty-state" style="grid-column:1/-1"><div class="icon">📡</div><p>Connect wallet to load live campaigns</p></div>
+  </div>
+</div>
+
+<!-- ───── CAMPAIGN EXPLORER ───── -->
+<div id="page-explorer" class="page">
+  <div class="section-header">
+    <div><div class="section-title">Campaign Explorer</div><div class="section-subtitle">All distribution campaigns across projects</div></div>
+  </div>
+  <div class="flex gap16 mb16" style="flex-wrap:wrap">
+    <input id="searchCampaigns" placeholder="Search campaigns…" style="max-width:280px" oninput="filterCampaigns()"/>
+    <select id="filterStatus" onchange="filterCampaigns()" style="max-width:160px">
+      <option value="">All statuses</option>
+      <option value="0">Active</option>
+      <option value="1">Paused</option>
+      <option value="2">Closed</option>
+    </select>
+    <select id="filterMode" onchange="filterCampaigns()" style="max-width:180px">
+      <option value="">All types</option>
+      <option value="0">Merkle</option>
+      <option value="1">Direct</option>
+    </select>
+    <button class="btn-ghost" onclick="loadAllCampaigns()">↻ Refresh</button>
+  </div>
+  <div class="grid-3" id="campaignGrid">
+    <div class="empty-state" style="grid-column:1/-1"><div class="icon">🔍</div><h3>No campaigns found</h3><p>Connect wallet or try different filters</p></div>
+  </div>
+</div>
+
+<!-- ───── PROJECTS ───── -->
+<div id="page-projects" class="page">
+  <div class="section-header">
+    <div><div class="section-title">Project Directory</div><div class="section-subtitle">Web3 projects running token campaigns</div></div>
+    <button class="btn-primary btn-sm" onclick="showPage('create-project')">+ New Project</button>
+  </div>
+  <div class="grid-3" id="projectGrid">
+    <div class="empty-state" style="grid-column:1/-1"><div class="icon">🏗</div><h3>No projects yet</h3><p>Be the first to create a project</p></div>
+  </div>
+</div>
+
+<!-- ───── PROJECT DETAIL ───── -->
+<div id="page-project-detail" class="page">
+  <div id="projectDetailContent"></div>
+</div>
+
+<!-- ───── CAMPAIGN DETAIL ───── -->
+<div id="page-campaign-detail" class="page">
+  <div id="campaignDetailContent"></div>
+</div>
+
+<!-- ───── CREATE PROJECT ───── -->
+<div id="page-create-project" class="page">
+  <div class="section-header">
+    <div><div class="section-title">Create Project</div><div class="section-subtitle">Register your project on Rewarding</div></div>
+  </div>
+  <div class="form-page">
+    <div class="alert-info alert">Your project profile is stored on-chain. You'll need gas to submit.</div>
+    <div class="form-section">
+      <div class="form-section-title">Project identity</div>
+      <div class="field"><label>Project name *</label><input id="pName" placeholder="e.g. CoolDAO"/></div>
+      <div class="field"><label>Logo URI</label><input id="pLogo" placeholder="https:// or ipfs://"/><div class="field-hint">Public URL or IPFS CID. Displayed as project avatar.</div></div>
+      <div class="field"><label>Description *</label><textarea id="pDesc" placeholder="What does your project do?"></textarea></div>
+    </div>
+    <div class="form-section">
+      <div class="form-section-title">Links</div>
+      <div class="field"><label>Website</label><input id="pWeb" placeholder="https://yourproject.xyz"/></div>
+      <div class="field-row">
+        <div class="field"><label>Twitter / X</label><input id="pTwitter" placeholder="@handle"/></div>
+        <div class="field"><label>Discord</label><input id="pDiscord" placeholder="discord.gg/invite"/></div>
+      </div>
+    </div>
+    <button class="btn-primary w-full" id="createProjectBtn" onclick="createProject()">
+      <span id="createProjectBtnText">Create Project</span>
+    </button>
+  </div>
+</div>
+
+<!-- ───── CREATE CAMPAIGN ───── -->
+<div id="page-create-campaign" class="page">
+  <div class="section-header">
+    <div><div class="section-title">Create Campaign</div><div class="section-subtitle">Set up a new token distribution campaign</div></div>
+  </div>
+  <div class="form-page">
+    <div class="alert-info alert">Token allocation is transferred to the contract on creation. Unclaimed tokens are refundable after campaign ends.</div>
+    <div class="form-section">
+      <div class="form-section-title">Campaign basics</div>
+      <div class="field"><label>Select project *</label>
+        <select id="cProject"><option value="">— Select your project —</option></select>
+      </div>
+      <div class="field"><label>Campaign name *</label><input id="cName" placeholder="e.g. Early Adopters Airdrop Season 1"/></div>
+      <div class="field"><label>Description *</label><textarea id="cDesc" placeholder="Describe what this campaign rewards…"></textarea></div>
+    </div>
+    <div class="form-section">
+      <div class="form-section-title">Token & allocation</div>
+      <div class="field"><label>Token contract address *</label>
+        <input id="cToken" placeholder="0x… (ERC-20) or leave 0x0000… for native token"/>
+        <div class="field-hint">For BOT Chain USDT, verify the official contract address on the BOT Chain explorer before pasting.</div>
+      </div>
+      <div class="field"><label>Total allocation *</label>
+        <input id="cAlloc" type="number" placeholder="e.g. 100000" min="0"/>
+        <div class="field-hint" id="allocFeeHint">Platform fee will be shown after you enter the amount.</div>
+      </div>
+      <div id="platformFeePreview" class="hidden alert-warn alert"></div>
+    </div>
+    <div class="form-section">
+      <div class="form-section-title">Timing</div>
+      <div class="field-row">
+        <div class="field"><label>Start date & time *</label><input id="cStart" type="datetime-local"/></div>
+        <div class="field"><label>End date & time *</label><input id="cEnd" type="datetime-local"/></div>
+      </div>
+    </div>
+    <div class="form-section">
+      <div class="form-section-title">Whitelist mode</div>
+      <div class="flex gap16">
+        <label style="display:flex;gap:8px;cursor:pointer;align-items:flex-start">
+          <input type="radio" name="wlMode" id="wlMerkle" value="0" checked style="width:auto;margin-top:3px"/>
+          <div><div style="font-size:14px;font-weight:600">Merkle Proof <span class="badge-merkle mini-badge">Recommended</span></div>
+          <div class="text-xs text-muted" style="margin-top:2px">Best for large allowlists. Upload CSV → generate root → register on-chain. Proofs distributed off-chain.</div></div>
+        </label>
+        <label style="display:flex;gap:8px;cursor:pointer;align-items:flex-start">
+          <input type="radio" name="wlMode" id="wlDirect" value="1" style="width:auto;margin-top:3px"/>
+          <div><div style="font-size:14px;font-weight:600">Direct Registration</div>
+          <div class="text-xs text-muted" style="margin-top:2px">Register wallet → amount pairs directly on-chain. Suitable for &lt;100 addresses. Higher gas.</div></div>
+        </label>
+      </div>
+    </div>
+    <div class="form-section">
+      <div class="form-section-title">Advanced (optional)</div>
+      <div class="field-row">
+        <div class="field"><label>Vesting duration (seconds)</label>
+          <input id="cVest" type="number" placeholder="0 = no vesting" min="0"/>
+          <div class="field-hint">Linear vesting from campaign start. 0 for instant full claim.</div>
+        </div>
+        <div class="field" style="display:flex;align-items:center;gap:10px;padding-top:28px">
+          <input type="checkbox" id="cPartial" style="width:auto"/>
+          <label for="cPartial" style="margin:0;font-size:14px;cursor:pointer">Allow partial vesting claims</label>
+        </div>
+      </div>
+      <div class="field"><label>Merkle root (if pre-computed)</label>
+        <input id="cMerkleRoot" placeholder="0x… (optional — set later in Whitelist Manager)"/>
+      </div>
+    </div>
+    <button class="btn-primary w-full" id="createCampaignBtn" onclick="createCampaign()">
+      <span id="createCampaignBtnText">Fund &amp; Create Campaign</span>
+    </button>
+  </div>
+</div>
+
+<!-- ───── WHITELIST MANAGER ───── -->
+<div id="page-whitelist" class="page">
+  <div class="section-header">
+    <div><div class="section-title">Whitelist Manager</div><div class="section-subtitle">Generate Merkle roots and manage allocations</div></div>
+  </div>
+  <div class="grid-2">
+    <div>
+      <div class="card mb16">
+        <h3 style="margin-bottom:12px">Upload allowlist CSV</h3>
+        <div class="alert-info alert" style="font-size:12px">
+          CSV format: <code>address,amount</code> per line. Amount may be in token units (e.g. <code>100</code>) or wei. The generator multiplies non-wei amounts by 10^decimals.
+        </div>
+        <div class="merkle-box" id="dropZone" onclick="document.getElementById('csvInput').click()"
+             ondragover="handleDrag(event,true)" ondragleave="handleDrag(event,false)" ondrop="handleDrop(event)">
+          <div style="font-size:2rem">📄</div>
+          <h3>Drop CSV here or click to browse</h3>
+          <p>address,amount — one per line</p>
+        </div>
+        <input type="file" id="csvInput" accept=".csv,.txt" class="hidden" onchange="loadCSV(event)"/>
+        <div class="field mt16"><label>Token decimals</label><input id="csvDecimals" type="number" value="18" min="0" max="18"/></div>
+        <div class="flex gap8 mt16">
+          <button class="btn-primary" onclick="generateMerkleRoot()">Generate Merkle Root</button>
+          <button class="btn-ghost" onclick="document.getElementById('csvInput').click()">Or paste manually</button>
+        </div>
+        <div class="field mt16 hidden" id="pasteArea"><label>Paste CSV data</label><textarea id="csvPaste" placeholder="0xWallet1,100&#10;0xWallet2,250&#10;..."></textarea><button class="btn-primary btn-sm mt8" onclick="parseFromPaste()">Parse</button></div>
+        <button class="btn-ghost btn-sm mt8" onclick="document.getElementById('pasteArea').classList.toggle('hidden')">Toggle paste mode</button>
+      </div>
+      <div class="card hidden" id="merkleStats">
+        <h3 style="margin-bottom:8px">Merkle root</h3>
+        <div class="root-display" id="merkleRootDisplay">—</div>
+        <div class="flex gap16 text-sm text-muted">
+          <span id="merkleEntryCount">0 entries</span>
+          <span id="merkleTotalAlloc">— tokens total</span>
+        </div>
+        <div class="flex gap8 mt16">
+          <button class="btn-primary btn-sm" onclick="registerMerkleRoot()">Register on Campaign</button>
+          <button class="btn-ghost btn-sm" onclick="downloadProofs()">↓ Download all proofs</button>
+          <button class="btn-ghost btn-sm" onclick="copyCampaignLink()">Copy claim link</button>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="card">
+        <h3 style="margin-bottom:12px">Address preview</h3>
+        <div class="field"><label>Verify an address</label>
+          <input id="verifyAddr" placeholder="0x… paste address to check proof"/>
+          <button class="btn-ghost btn-sm mt8" onclick="verifyAddress()">Check eligibility</button>
+        </div>
+        <div id="verifyResult" class="hidden mt16"></div>
+        <div class="mt16 proof-table-wrap hidden" id="proofTableWrap">
+          <div class="table-wrap">
+            <table id="proofTable">
+              <thead><tr><th>Address</th><th>Amount</th><th>Proof (first node)</th></tr></thead>
+              <tbody id="proofTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="card mt16">
+        <h3 style="margin-bottom:12px">Register to campaign</h3>
+        <div class="field"><label>Campaign ID</label><input id="wlCampaignId" placeholder="e.g. 3"/></div>
+        <div class="alert-warn alert text-xs mt8" id="wlModeWarn" style="display:none">This campaign uses Direct mode. Use the direct allocation manager below instead.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ───── CLAIM DASHBOARD ───── -->
+<div id="page-claim" class="page">
+  <div class="section-header">
+    <div><div class="section-title">My Claims</div><div class="section-subtitle">Your token allocations and claim history</div></div>
+  </div>
+  <div class="alert-info alert" id="claimConnectAlert">Connect your wallet to view your eligible campaigns.</div>
+  <div id="claimContent" class="hidden">
+    <div class="field" style="max-width:420px;margin-bottom:24px">
+      <label>Find campaign by ID</label>
+      <div class="flex gap8">
+        <input id="claimCampaignId" placeholder="Campaign ID"/>
+        <button class="btn-primary btn-sm" onclick="checkCampaignEligibility()" style="white-space:nowrap">Check eligibility</button>
+      </div>
+    </div>
+    <div id="claimEligibilityResult"></div>
+    <div class="section-header" style="padding-top:32px">
+      <div class="section-title" style="font-size:1.2rem">Claim history</div>
+    </div>
+    <div class="table-wrap" id="claimHistoryTable">
+      <div class="empty-state"><div class="icon">📋</div><h3>No claims yet</h3></div>
+    </div>
+  </div>
+</div>
+
+<!-- ───── PROJECT OWNER DASHBOARD ───── -->
+<div id="page-dashboard" class="page">
+  <div class="dashboard-grid">
+    <div class="sidebar">
+      <div class="card mb16">
+        <div id="dashProjectInfo">
+          <div class="text-muted text-sm">No project connected</div>
+        </div>
+      </div>
+      <div class="sidebar-menu">
+        <div class="sidebar-item active" onclick="dashTab('overview')"><span class="icon">📊</span> Overview</div>
+        <div class="sidebar-item" onclick="dashTab('campaigns')"><span class="icon">🎯</span> Campaigns</div>
+        <div class="sidebar-item" onclick="dashTab('whitelist')"><span class="icon">✅</span> Whitelist</div>
+        <div class="sidebar-item" onclick="dashTab('settings')"><span class="icon">⚙️</span> Settings</div>
+      </div>
+    </div>
+    <div>
+      <div id="dashOverview">
+        <div class="grid-3" style="margin-bottom:20px" id="dashMetrics">
+          <div class="admin-metric"><h4>Total allocated</h4><div class="val text-violet" id="dmAlloc">—</div></div>
+          <div class="admin-metric"><h4>Total claimed</h4><div class="val text-green" id="dmClaimed">—</div></div>
+          <div class="admin-metric"><h4>Campaigns</h4><div class="val" id="dmCount">—</div></div>
+        </div>
+        <div class="table-wrap" id="dashCampaignList">
+          <div class="empty-state"><div class="icon">🏗</div><h3>No campaigns yet</h3><p>Create your first campaign to get started</p></div>
+        </div>
+        <button class="btn-primary mt16" onclick="showPage('create-campaign')">+ New Campaign</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ───── PLATFORM ADMIN ───── -->
+<div id="page-admin" class="page">
+  <div class="section-header">
+    <div><div class="section-title">Platform Administration</div></div>
+  </div>
+  <div class="alert-warn alert" id="adminAccessWarn">Platform admin role required. Connect an admin wallet.</div>
+  <div id="adminContent" class="hidden">
+    <div class="grid-3 mb16">
+      <div class="admin-metric"><h4>Platform fee</h4><div class="val text-violet" id="adminFee">—</div></div>
+      <div class="admin-metric"><h4>Total projects</h4><div class="val" id="adminTotalProjects">—</div></div>
+      <div class="admin-metric"><h4>Total campaigns</h4><div class="val" id="adminTotalCampaigns">—</div></div>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <h3 style="margin-bottom:16px">Fee configuration</h3>
+        <div class="field"><label>New fee (basis points)</label><input id="newFeeBps" type="number" placeholder="e.g. 100 = 1%" min="0" max="500"/></div>
+        <div class="field-hint mb16">Maximum 500 bps (5%). Current platform ceiling.</div>
+        <button class="btn-primary btn-sm" onclick="adminSetFee()">Update fee</button>
+      </div>
+      <div class="card">
+        <h3 style="margin-bottom:16px">Campaign control</h3>
+        <div class="field"><label>Campaign ID</label><input id="adminCampaignId" placeholder="Campaign ID"/></div>
+        <div class="flex gap8 mt8">
+          <button class="btn-primary btn-sm" onclick="adminPauseCampaign()">Pause campaign</button>
+          <button class="btn-outline btn-sm" onclick="adminResumePlatform()">Resume platform</button>
+          <button class="btn-danger btn-sm btn-primary" onclick="adminPausePlatform()">Pause all</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /container -->
+</main>
+</div><!-- /app -->
+
+<!-- ═══════ TOAST ═══════ -->
+<div id="toast"></div>
+
+<!-- ═══════ CLAIM MODAL ═══════ -->
+<div class="modal-overlay" id="claimModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('claimModal')">✕</button>
+    <h2>Claim tokens</h2>
+    <p class="modal-sub" id="claimModalSub">—</p>
+    <div class="field" id="claimProofField">
+      <label>Merkle proof (JSON array)</label>
+      <textarea id="claimProofInput" placeholder='["0x...","0x..."]'></textarea>
+      <div class="field-hint">Paste your proof from the campaign creator's proof distribution channel.</div>
+    </div>
+    <div class="field" id="claimAmountField">
+      <label>Your allocation amount (in wei)</label>
+      <input id="claimAllocInput" placeholder="e.g. 1000000000000000000"/>
+      <div class="field-hint">The exact amount from the Merkle leaf. Check the proof data distributed by the project.</div>
+    </div>
+    <div id="claimModalPreview" class="alert-info alert hidden"></div>
+    <button class="btn-primary w-full mt16" id="claimConfirmBtn" onclick="confirmClaim()">
+      <span id="claimConfirmText">Claim tokens</span>
+    </button>
+  </div>
+</div>
+
+<!-- ═══════ SCRIPTS ═══════ -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.13.2/ethers.umd.min.js"></script>
+<!-- MerkleTree JS loaded via CDN — in production bundle with webpack/vite -->
+<!-- For now, a minimal Merkle implementation is inlined -->
+<script>
+"use strict";
+// ─────────────────────────────────────────────────────────────────────────────
+//  INLINE MERKLE TREE (no external dep required in browser)
+//  Compatible with merkletreejs sortPairs=true standard
+// ─────────────────────────────────────────────────────────────────────────────
+const MerkleUtils = (() => {
+    function hexToBytes(hex) {
+        hex = hex.startsWith("0x") ? hex.slice(2) : hex;
+        const arr = new Uint8Array(hex.length / 2);
+        for (let i = 0; i < arr.length; i++) arr[i] = parseInt(hex.substr(i*2,2),16);
+        return arr;
+    }
+    async function keccak256(input) {
+        // Use ethers' keccak256 which is available via CDN
+        if (typeof input === "string") return ethers.keccak256(input);
+        return ethers.keccak256(input);
+    }
+    function combineAndHash(a, b) {
+        // sortPairs=true: sort a,b lex before hashing
+        const aHex = a.startsWith("0x") ? a.slice(2) : a;
+        const bHex = b.startsWith("0x") ? b.slice(2) : b;
+        const combined = aHex < bHex ? aHex + bHex : bHex + aHex;
+        return ethers.keccak256("0x" + combined);
+    }
+
+    function buildLeaf(address, amount) {
+        const packed = ethers.solidityPacked(["address","uint256"],[address, BigInt(amount)]);
+        return ethers.keccak256(packed);
+    }
+
+    function buildTree(entries) {
+        // Build leaves
+        const leaves = entries.map(e => buildLeaf(
+            ethers.getAddress(e.address), e.amount.toString()
+        ));
+        // Sort leaves
+        const sortedLeaves = [...leaves].sort();
+        // Build layers
+        let layer = sortedLeaves;
+        const layers = [layer];
+        while (layer.length > 1) {
+            const nextLayer = [];
+            for (let i = 0; i < layer.length; i += 2) {
+                if (i + 1 < layer.length) {
+                    nextLayer.push(combineAndHash(layer[i], layer[i+1]));
+                } else {
+                    nextLayer.push(layer[i]); // odd leaf passes up
+                }
+            }
+            layer = nextLayer;
+            layers.push(layer);
+        }
+        return { entries, leaves: sortedLeaves, layers };
+    }
+
+    function getRoot(tree) {
+        return tree.layers[tree.layers.length - 1][0] || "0x";
+    }
+
+    function getProof(tree, address, amount) {
+        const targetLeaf = buildLeaf(ethers.getAddress(address), amount.toString());
+        let idx = tree.leaves.indexOf(targetLeaf);
+        if (idx === -1) return null;
+        const proof = [];
+        for (let i = 0; i < tree.layers.length - 1; i++) {
+            const layer = tree.layers[i];
+            const isRight = idx % 2 === 1;
+            const pairIdx = isRight ? idx - 1 : idx + 1;
+            if (pairIdx < layer.length) proof.push(layer[pairIdx]);
+            idx = Math.floor(idx / 2);
+        }
+        return proof;
+    }
+
+    function verify(root, address, amount, proof) {
+        let hash = buildLeaf(ethers.getAddress(address), amount.toString());
+        for (const p of proof) {
+            hash = combineAndHash(hash, p);
+        }
+        return hash === root;
+    }
+
+    function parseCSV(text, decimals=18) {
+        const mult = BigInt(10) ** BigInt(decimals);
+        const lines = text.trim().split("\n");
+        const entries = [];
+        for (let i = 0; i < lines.length; i++) {
+            const line = lines[i].trim();
+            if (!line || line.startsWith("#")) continue;
+            if (i===0 && line.toLowerCase().includes("address")) continue;
+            const [rawAddr, rawAmt] = line.split(",").map(s=>s.trim().replace(/"/g,""));
+            if (!rawAddr || !rawAmt) continue;
+            let amount;
+            try {
+                if (rawAmt.includes(".")) {
+                    const [w, f=""] = rawAmt.split(".");
+                    amount = (BigInt(w)*mult + BigInt(f.padEnd(decimals,"0").slice(0,decimals))).toString();
+                } else if (rawAmt.length < 15) {
+                    amount = (BigInt(rawAmt)*mult).toString();
+                } else {
+                    amount = rawAmt;
+                }
+                entries.push({ address: ethers.getAddress(rawAddr), amount });
+            } catch(e) {
+                console.warn("Skipping line", i, e.message);
+            }
+        }
+        return entries;
+    }
+
+    return { buildLeaf, buildTree, getRoot, getProof, verify, parseCSV };
+})();
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  APP STATE
+// ─────────────────────────────────────────────────────────────────────────────
+const STATE = {
+    provider: null,
+    signer:   null,
+    account:  null,
+    contract: null,
+    chainId:  null,
+    projects:  [],
+    campaigns: [],
+    merkleTree:  null,
+    merkleEntries: null,
+    activeCampaignId: null,
+    currentPage: "landing",
+};
+
+// ── Contract config ───────────────────────────────
+// Replace with your deployed address and ABI
+const CONTRACT_ADDRESS = "0x0000000000000000000000000000000000000000"; // DEPLOY FIRST
+const CONTRACT_ABI = [
+    "function createProject(string,string,string,string,string,string) returns(uint256)",
+    "function updateProject(uint256,string,string,string,string,string,string)",
+    "function createCampaign(uint256,string,string,address,uint256,uint256,uint256,bytes32,uint8,bool,uint256) payable returns(uint256)",
+    "function claimMerkle(uint256,uint256,bytes32[]) nonpayable",
+    "function claimDirect(uint256) nonpayable",
+    "function setDirectAllocations(uint256,address[],uint256[])",
+    "function updateMerkleRoot(uint256,bytes32)",
+    "function pauseCampaign(uint256)",
+    "function resumeCampaign(uint256)",
+    "function closeCampaign(uint256)",
+    "function refundUnclaimed(uint256)",
+    "function setFee(uint256)",
+    "function setFeeRecipient(address)",
+    "function pausePlatform()",
+    "function resumePlatform()",
+    "function adminPauseCampaign(uint256)",
+    "function getProject(uint256) view returns(tuple(uint256 id,address owner,string name,string logoURI,string description,string website,string twitter,string discord,bool active,uint256 createdAt))",
+    "function getCampaign(uint256) view returns(tuple(uint256 id,uint256 projectId,string name,string description,address token,uint256 totalAllocation,uint256 claimedAmount,uint256 startTime,uint256 endTime,bytes32 merkleRoot,uint8 whitelistMode,uint8 status,bool allowPartialClaim,uint256 vestingDuration,address funder))",
+    "function getProjectCampaigns(uint256) view returns(uint256[])",
+    "function getUserClaimedAmount(uint256,address) view returns(uint256)",
+    "function previewClaimable(uint256,uint256,address) view returns(uint256)",
+    "function totalProjects() view returns(uint256)",
+    "function totalCampaigns() view returns(uint256)",
+    "function platformFeeBps() view returns(uint256)",
+    "function hasClaimed(uint256,address) view returns(bool)",
+    "function directAllocation(uint256,address) view returns(uint256)",
+    "event ProjectCreated(uint256 indexed,address indexed,string)",
+    "event CampaignCreated(uint256 indexed,uint256 indexed,address,uint256)",
+    "event TokensClaimed(uint256 indexed,address indexed,uint256)",
+];
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  WALLET CONNECTION
+// ─────────────────────────────────────────────────────────────────────────────
+async function connectWallet() {
+    if (!window.ethereum) {
+        toast("MetaMask or compatible wallet required", "error");
+        return;
+    }
+    try {
+        const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
+        await initProvider(accounts[0]);
+    } catch(e) {
+        toast("Wallet connection rejected", "error");
+    }
+}
+
+async function initProvider(account) {
+    STATE.provider = new ethers.BrowserProvider(window.ethereum);
+    STATE.signer   = await STATE.provider.getSigner();
+    STATE.account  = account;
+    const network  = await STATE.provider.getNetwork();
+    STATE.chainId  = Number(network.chainId);
+
+    if (CONTRACT_ADDRESS !== "0x0000000000000000000000000000000000000000") {
+        STATE.contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, STATE.signer);
+    }
+
+    const btn = document.getElementById("connectBtn");
+    btn.textContent = shortAddr(account);
+    btn.classList.add("connected");
+
+    // Show claim content
+    document.getElementById("claimConnectAlert").classList.add("hidden");
+    document.getElementById("claimContent").classList.remove("hidden");
+
+    await loadPlatformData();
+    await loadAllCampaigns();
+    await loadOwnerProjectOptions();
+    await checkAdminAccess();
+}
+
+window.ethereum?.on("accountsChanged", (accs) => {
+    if (accs.length) initProvider(accs[0]);
+    else location.reload();
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  DATA LOADING
+// ─────────────────────────────────────────────────────────────────────────────
+async function loadPlatformData() {
+    if (!STATE.contract) return;
+    try {
+        const [tp, tc, fee] = await Promise.all([
+            STATE.contract.totalProjects(),
+            STATE.contract.totalCampaigns(),
+            STATE.contract.platformFeeBps(),
+        ]);
+        setText("statProjects", tp.toString());
+        setText("statCampaigns", tc.toString());
+        setText("statFee", (Number(fee)/100).toFixed(2) + "%");
+        setText("heroProjects", tp.toString());
+        setText("heroCampaigns", tc.toString());
+        setText("adminFee", (Number(fee)/100).toFixed(2) + "%");
+        setText("adminTotalProjects", tp.toString());
+        setText("adminTotalCampaigns", tc.toString());
+    } catch(e) {
+        console.warn("loadPlatformData:", e.message);
+    }
+}
+
+async function loadAllCampaigns() {
+    if (!STATE.contract) return;
+    try {
+        const total = Number(await STATE.contract.totalCampaigns());
+        const campaigns = [];
+        for (let i = 1; i <= total; i++) {
+            try {
+                const c = await STATE.contract.getCampaign(i);
+                campaigns.push(formatCampaign(c, i));
+            } catch {}
+        }
+        STATE.campaigns = campaigns;
+        renderCampaignGrid(campaigns, "campaignGrid");
+        renderCampaignGrid(campaigns.slice(0,3), "featuredCampaigns");
+        renderHeroFeed(campaigns.slice(0,3));
+    } catch(e) {
+        console.warn("loadAllCampaigns:", e.message);
+    }
+}
+
+async function loadOwnerProjectOptions() {
+    if (!STATE.contract || !STATE.account) return;
+    try {
+        const total = Number(await STATE.contract.totalProjects());
+        const sel = document.getElementById("cProject");
+        sel.innerHTML = '<option value="">— Select your project —</option>';
+        for (let i = 1; i <= total; i++) {
+            try {
+                const p = await STATE.contract.getProject(i);
+                if (p.owner.toLowerCase() === STATE.account.toLowerCase()) {
+                    const opt = document.createElement("option");
+                    opt.value = i;
+                    opt.textContent = `#${i} — ${p.name}`;
+                    sel.appendChild(opt);
+                }
+            } catch {}
+        }
+    } catch {}
+}
+
+function formatCampaign(c, id) {
+    return {
+        id,
+        projectId:      Number(c.projectId),
+        name:           c.name,
+        description:    c.description,
+        token:          c.token,
+        totalAllocation: c.totalAllocation,
+        claimedAmount:  c.claimedAmount,
+        startTime:      Number(c.startTime),
+        endTime:        Number(c.endTime),
+        merkleRoot:     c.merkleRoot,
+        whitelistMode:  Number(c.whitelistMode),
+        status:         Number(c.status),
+        allowPartialClaim: c.allowPartialClaim,
+        vestingDuration: Number(c.vestingDuration),
+        funder:         c.funder,
+    };
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  RENDERING
+// ─────────────────────────────────────────────────────────────────────────────
+const STATUS_LABELS  = ["Active","Paused","Closed","Expired"];
+const STATUS_CLASSES = ["badge-active","badge-paused","badge-closed","badge-expired"];
+const MODE_LABELS    = ["Merkle","Direct"];
+const MODE_CLASSES   = ["badge-merkle","badge-direct"];
+
+function renderCampaignGrid(campaigns, containerId) {
+    const el = document.getElementById(containerId);
+    if (!campaigns.length) {
+        el.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="icon">📡</div><h3>No campaigns found</h3></div>`;
+        return;
+    }
+    el.innerHTML = campaigns.map(c => campaignCardHTML(c)).join("");
+}
+
+function campaignCardHTML(c) {
+    const pct = c.totalAllocation > 0n
+        ? Math.round(Number((c.claimedAmount * 100n) / c.totalAllocation))
+        : 0;
+    const remaining = timeLeft(c.endTime);
+    const allocFmt = formatTokenAmount(c.totalAllocation);
+    return `<div class="card campaign-card card-hover" onclick="showCampaignDetail(${c.id})">
+      <div class="card-header">
+        <div class="project-logo">${c.name[0]?.toUpperCase()}</div>
+        <div>
+          <div class="card-title">${esc(c.name)}</div>
+          <div class="card-meta">Project #${c.projectId}</div>
+        </div>
+      </div>
+      <div class="tags">
+        <span class="mini-badge ${STATUS_CLASSES[c.status]}">${STATUS_LABELS[c.status]}</span>
+        <span class="mini-badge ${MODE_CLASSES[c.whitelistMode]}">${MODE_LABELS[c.whitelistMode]}</span>
+      </div>
+      <div class="allocation">${allocFmt}</div>
+      <div class="token-name">${shortAddr(c.token)} · Campaign #${c.id}</div>
+      <div class="progress-wrap">
+        <div class="progress-label"><span>Claimed</span><span>${pct}%</span></div>
+        <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+      </div>
+      <div class="time-left">⏱ ${remaining}</div>
+    </div>`;
+}
+
+function renderHeroFeed(campaigns) {
+    const el = document.getElementById("heroFeed");
+    el.innerHTML = campaigns.map(c => `
+      <div class="mini-campaign">
+        <div class="mini-avatar">${c.name[0]?.toUpperCase()}</div>
+        <div>
+          <div class="mini-name">${esc(c.name)}</div>
+          <div class="mini-sub">${formatTokenAmount(c.totalAllocation)} · Project #${c.projectId}</div>
+        </div>
+        <span class="mini-badge ${STATUS_CLASSES[c.status]}">${STATUS_LABELS[c.status]}</span>
+      </div>`).join("");
+}
+
+function filterCampaigns() {
+    const q      = document.getElementById("searchCampaigns").value.toLowerCase();
+    const status = document.getElementById("filterStatus").value;
+    const mode   = document.getElementById("filterMode").value;
+    const filtered = STATE.campaigns.filter(c => {
+        if (q && !c.name.toLowerCase().includes(q)) return false;
+        if (status !== "" && c.status !== Number(status)) return false;
+        if (mode !== "" && c.whitelistMode !== Number(mode)) return false;
+        return true;
+    });
+    renderCampaignGrid(filtered, "campaignGrid");
+}
+
+async function showCampaignDetail(id) {
+    if (!STATE.contract) { toast("Connect wallet first","error"); return; }
+    try {
+        const raw = await STATE.contract.getCampaign(id);
+        const c = formatCampaign(raw, id);
+        const proj = await STATE.contract.getProject(c.projectId);
+        const pct = c.totalAllocation > 0n
+            ? Math.round(Number((c.claimedAmount * 100n) / c.totalAllocation))
+            : 0;
+        let userBlock = "";
+        if (STATE.account) {
+            const claimed = await STATE.contract.hasClaimed(id, STATE.account);
+            const dirAlloc = c.whitelistMode === 1
+                ? await STATE.contract.directAllocation(id, STATE.account)
+                : 0n;
+            userBlock = `<div class="card mt16">
+              <h3 style="margin-bottom:12px">Your eligibility</h3>
+              ${claimed
+                ? `<div class="claim-status status-claimed">✔ Already claimed</div>`
+                : c.whitelistMode === 1 && dirAlloc > 0n
+                  ? `<div class="claim-status status-eligible">✔ Eligible — ${formatTokenAmount(dirAlloc)}</div>
+                     <button class="btn-primary mt16" onclick="openClaimModal(${id},1,${dirAlloc})">Claim tokens</button>`
+                  : `<div class="claim-status status-not-eligible">Not verified yet</div>
+                     ${c.whitelistMode === 0 ? `<button class="btn-primary mt16" onclick="openClaimModal(${id},0,0)">Claim with Merkle proof</button>` : ""}
+                  `}
+            </div>`;
+        }
+        document.getElementById("campaignDetailContent").innerHTML = `
+          <button class="btn-ghost mb16" onclick="showPage('explorer')">← Back to explorer</button>
+          <div class="grid-2">
+            <div>
+              <div class="card">
+                <div class="card-header">
+                  <div class="project-logo">${c.name[0]?.toUpperCase()}</div>
+                  <div>
+                    <div style="font-size:1.2rem;font-weight:800;font-family:'Syne',sans-serif">${esc(c.name)}</div>
+                    <div class="card-meta">by ${esc(proj.name)}</div>
+                  </div>
+                </div>
+                <div class="tags">
+                  <span class="mini-badge ${STATUS_CLASSES[c.status]}">${STATUS_LABELS[c.status]}</span>
+                  <span class="mini-badge ${MODE_CLASSES[c.whitelistMode]}">${MODE_LABELS[c.whitelistMode]}</span>
+                  ${c.vestingDuration > 0 ? '<span class="mini-badge badge-active">Vested</span>' : ""}
+                </div>
+                <p style="color:var(--text2);font-size:14px;margin:12px 0">${esc(c.description)}</p>
+                <div class="progress-wrap">
+                  <div class="progress-label"><span>Claimed: ${formatTokenAmount(c.claimedAmount)}</span><span>${pct}%</span></div>
+                  <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+                  <div class="text-xs text-muted mt8">Total: ${formatTokenAmount(c.totalAllocation)}</div>
+                </div>
+              </div>
+              ${userBlock}
+            </div>
+            <div>
+              <div class="card">
+                <h3 style="margin-bottom:16px">Campaign details</h3>
+                ${detailRow("Campaign ID", `#${id}`)}
+                ${detailRow("Token", shortAddr(c.token))}
+                ${detailRow("Start", new Date(c.startTime*1000).toLocaleString())}
+                ${detailRow("End", new Date(c.endTime*1000).toLocaleString())}
+                ${detailRow("Time left", timeLeft(c.endTime))}
+                ${detailRow("Vesting", c.vestingDuration > 0 ? `${c.vestingDuration/86400} days linear` : "None — instant")}
+                ${detailRow("Merkle root", c.merkleRoot !== "0x" + "0".repeat(64) ? shortAddr(c.merkleRoot) : "Direct mode")}
+              </div>
+              <div class="card mt16">
+                <h3 style="margin-bottom:12px">Project</h3>
+                <div style="font-weight:700;margin-bottom:4px">${esc(proj.name)}</div>
+                <p style="color:var(--text2);font-size:13px">${esc(proj.description)}</p>
+                <div class="flex gap8 mt12">
+                  ${proj.website ? `<a href="${esc(proj.website)}" target="_blank" class="btn-ghost btn-sm">Website ↗</a>` : ""}
+                  ${proj.twitter ? `<a href="https://x.com/${esc(proj.twitter)}" target="_blank" class="btn-ghost btn-sm">X/Twitter</a>` : ""}
+                </div>
+              </div>
+            </div>
+          </div>`;
+        showPage("campaign-detail");
+    } catch(e) {
+        toast("Failed to load campaign: " + e.message, "error");
+    }
+}
+
+function detailRow(label, value) {
+    return `<div class="flex" style="justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px">
+      <span class="text-muted">${label}</span><span style="font-weight:500;text-align:right;max-width:60%;word-break:break-all">${value}</span>
+    </div>`;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  PROJECT CREATION
+// ─────────────────────────────────────────────────────────────────────────────
+async function createProject() {
+    if (!STATE.signer) { toast("Connect wallet first","error"); return; }
+    const name  = document.getElementById("pName").value.trim();
+    const logo  = document.getElementById("pLogo").value.trim();
+    const desc  = document.getElementById("pDesc").value.trim();
+    const web   = document.getElementById("pWeb").value.trim();
+    const tw    = document.getElementById("pTwitter").value.trim();
+    const disc  = document.getElementById("pDiscord").value.trim();
+    if (!name || !desc) { toast("Name and description required","error"); return; }
+    setBtnLoading("createProjectBtn","createProjectBtnText",true);
+    try {
+        const tx = await STATE.contract.createProject(name,logo,desc,web,tw,disc);
+        toast("Transaction submitted — waiting for confirmation…","info");
+        const receipt = await tx.wait();
+        toast("Project created successfully!","success");
+        await loadOwnerProjectOptions();
+        showPage("dashboard");
+    } catch(e) {
+        toast(e.reason || e.message || "Transaction failed","error");
+    }
+    setBtnLoading("createProjectBtn","createProjectBtnText",false,"Create Project");
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  CAMPAIGN CREATION
+// ─────────────────────────────────────────────────────────────────────────────
+document.getElementById("cAlloc")?.addEventListener("input", previewFee);
+
+async function previewFee() {
+    if (!STATE.contract) return;
+    try {
+        const feeBps = Number(await STATE.contract.platformFeeBps());
+        const alloc  = parseFloat(document.getElementById("cAlloc").value) || 0;
+        if (alloc > 0) {
+            const fee = (alloc * feeBps / 10000).toFixed(4);
+            const total = (alloc + Number(fee)).toFixed(4);
+            document.getElementById("platformFeePreview").textContent =
+                `Platform fee: ${fee} tokens (${feeBps/100}%). You will approve ${total} total.`;
+            document.getElementById("platformFeePreview").classList.remove("hidden");
+        }
+    } catch {}
+}
+
+async function createCampaign() {
+    if (!STATE.signer) { toast("Connect wallet first","error"); return; }
+    const projectId = document.getElementById("cProject").value;
+    const name      = document.getElementById("cName").value.trim();
+    const desc      = document.getElementById("cDesc").value.trim();
+    const tokenAddr = document.getElementById("cToken").value.trim();
+    const allocRaw  = document.getElementById("cAlloc").value.trim();
+    const startStr  = document.getElementById("cStart").value;
+    const endStr    = document.getElementById("cEnd").value;
+    const mode      = document.querySelector('input[name="wlMode"]:checked')?.value || "0";
+    const vest      = document.getElementById("cVest").value || "0";
+    const partial   = document.getElementById("cPartial").checked;
+    const merkleRoot = document.getElementById("cMerkleRoot").value.trim() || ethers.ZeroHash;
+
+    if (!projectId||!name||!desc||!tokenAddr||!allocRaw||!startStr||!endStr) {
+        toast("All required fields must be filled","error"); return;
+    }
+    const startTs = BigInt(Math.floor(new Date(startStr).getTime()/1000));
+    const endTs   = BigInt(Math.floor(new Date(endStr).getTime()/1000));
+    if (endTs <= startTs) { toast("End must be after start","error"); return; }
+
+    // Parse amount — assume human-readable, multiply by 10^18
+    let alloc;
+    try { alloc = ethers.parseUnits(allocRaw, 18); }
+    catch { toast("Invalid allocation amount","error"); return; }
+
+    setBtnLoading("createCampaignBtn","createCampaignBtnText",true);
+    try {
+        const isNative = tokenAddr === "0x0000000000000000000000000000000000000000";
+        let value = 0n;
+
+        if (!isNative) {
+            // Approve ERC-20
+            const feeBps = Number(await STATE.contract.platformFeeBps());
+            const fee    = (alloc * BigInt(feeBps)) / 10000n;
+            const needed = alloc + fee;
+            const erc20  = new ethers.Contract(tokenAddr,
+                ["function approve(address,uint256) returns(bool)",
+                 "function allowance(address,address) view returns(uint256)"],
+                STATE.signer);
+            const allowance = await erc20.allowance(STATE.account, CONTRACT_ADDRESS);
+            if (allowance < needed) {
+                toast("Approving token transfer…","info");
+                const approveTx = await erc20.approve(CONTRACT_ADDRESS, needed);
+                await approveTx.wait();
+            }
+        } else {
+            const feeBps = Number(await STATE.contract.platformFeeBps());
+            const fee    = (alloc * BigInt(feeBps)) / 10000n;
+            value = alloc + fee;
+        }
+
+        const tx = await STATE.contract.createCampaign(
+            projectId, name, desc, tokenAddr,
+            alloc, startTs, endTs,
+            merkleRoot, Number(mode), partial, BigInt(vest),
+            { value }
+        );
+        toast("Transaction submitted…","info");
+        await tx.wait();
+        toast("Campaign created and funded!","success");
+        await loadAllCampaigns();
+        showPage("dashboard");
+    } catch(e) {
+        toast(e.reason || e.message || "Transaction failed","error");
+    }
+    setBtnLoading("createCampaignBtn","createCampaignBtnText",false,"Fund & Create Campaign");
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  MERKLE PROOF GENERATION
+// ─────────────────────────────────────────────────────────────────────────────
+function handleDrag(e, isDragging) {
+    e.preventDefault();
+    document.getElementById("dropZone").classList.toggle("drag", isDragging);
+}
+
+function handleDrop(e) {
+    e.preventDefault();
+    document.getElementById("dropZone").classList.remove("drag");
+    const file = e.dataTransfer.files[0];
+    if (file) processCSVFile(file);
+}
+
+function loadCSV(e) {
+    const file = e.target.files[0];
+    if (file) processCSVFile(file);
+}
+
+function processCSVFile(file) {
+    const reader = new FileReader();
+    reader.onload = (e) => processCSVText(e.target.result);
+    reader.readAsText(file);
+}
+
+function parseFromPaste() {
+    processCSVText(document.getElementById("csvPaste").value);
+}
+
+function processCSVText(text) {
+    const dec = Number(document.getElementById("csvDecimals").value) || 18;
+    try {
+        const entries = MerkleUtils.parseCSV(text, dec);
+        if (!entries.length) { toast("No valid entries found in CSV","error"); return; }
+        STATE.merkleEntries = entries;
+        STATE.merkleTree    = MerkleUtils.buildTree(entries);
+        const root = MerkleUtils.getRoot(STATE.merkleTree);
+        document.getElementById("merkleRootDisplay").textContent = root;
+        document.getElementById("merkleStats").classList.remove("hidden");
+        setText("merkleEntryCount", entries.length + " entries");
+        const total = entries.reduce((acc,e) => acc + BigInt(e.amount), 0n);
+        setText("merkleTotalAlloc", formatTokenAmount(total) + " tokens total");
+        populateProofTable(entries);
+        toast(`Merkle tree built — ${entries.length} addresses`, "success");
+    } catch(e) {
+        toast("CSV parse error: " + e.message, "error");
+    }
+}
+
+function generateMerkleRoot() {
+    if (!STATE.merkleEntries) {
+        toast("Upload a CSV file first","error"); return;
+    }
+    toast("Root already generated — register it on-chain below","info");
+}
+
+function populateProofTable(entries) {
+    const tbody = document.getElementById("proofTableBody");
+    const wrap  = document.getElementById("proofTableWrap");
+    tbody.innerHTML = entries.slice(0, 50).map(e => {
+        const proof = MerkleUtils.getProof(STATE.merkleTree, e.address, e.amount);
+        const firstNode = proof?.[0] ? proof[0].slice(0,10) + "…" : "—";
+        return `<tr><td class="mono">${shortAddr(e.address)}</td>
+                    <td>${formatTokenAmount(BigInt(e.amount))}</td>
+                    <td class="mono">${firstNode}</td></tr>`;
+    }).join("");
+    if (entries.length > 50) {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td colspan="3" class="text-muted text-xs" style="text-align:center">…and ${entries.length-50} more</td>`;
+        tbody.appendChild(tr);
+    }
+    wrap.classList.remove("hidden");
+}
+
+function verifyAddress() {
+    const addr = document.getElementById("verifyAddr").value.trim();
+    const result = document.getElementById("verifyResult");
+    if (!addr) return;
+    if (!STATE.merkleTree) {
+        result.innerHTML = `<div class="alert-warn alert">Upload a CSV first to generate the tree.</div>`;
+        result.classList.remove("hidden");
+        return;
+    }
+    const entry = STATE.merkleEntries?.find(e => e.address.toLowerCase() === addr.toLowerCase());
+    if (!entry) {
+        result.innerHTML = `<div class="alert alert-warn">Address not in whitelist.</div>`;
+        result.classList.remove("hidden");
+        return;
+    }
+    const proof = MerkleUtils.getProof(STATE.merkleTree, entry.address, entry.amount);
+    const root  = MerkleUtils.getRoot(STATE.merkleTree);
+    const valid = MerkleUtils.verify(root, entry.address, entry.amount, proof);
+    result.innerHTML = `<div class="alert alert-success">
+      ✔ Eligible — allocation: <strong>${formatTokenAmount(BigInt(entry.amount))}</strong><br/>
+      Proof: <span class="font-mono text-xs">${JSON.stringify(proof)}</span>
+    </div>`;
+    result.classList.remove("hidden");
+}
+
+async function registerMerkleRoot() {
+    if (!STATE.signer) { toast("Connect wallet","error"); return; }
+    if (!STATE.merkleTree) { toast("Generate Merkle root first","error"); return; }
+    const campaignId = document.getElementById("wlCampaignId").value.trim();
+    if (!campaignId) { toast("Enter campaign ID","error"); return; }
+    const root = MerkleUtils.getRoot(STATE.merkleTree);
+    try {
+        const tx = await STATE.contract.updateMerkleRoot(campaignId, root);
+        toast("Registering root…","info");
+        await tx.wait();
+        toast("Merkle root registered on-chain!","success");
+    } catch(e) {
+        toast(e.reason || e.message || "Failed","error");
+    }
+}
+
+function downloadProofs() {
+    if (!STATE.merkleTree || !STATE.merkleEntries) {
+        toast("Generate tree first","error"); return;
+    }
+    const root   = MerkleUtils.getRoot(STATE.merkleTree);
+    const output = { root, proofs: {} };
+    for (const e of STATE.merkleEntries) {
+        const proof = MerkleUtils.getProof(STATE.merkleTree, e.address, e.amount);
+        output.proofs[e.address] = { amount: e.amount, proof };
+    }
+    const blob = new Blob([JSON.stringify(output, null, 2)], { type: "application/json" });
+    const a    = document.createElement("a");
+    a.href     = URL.createObjectURL(blob);
+    a.download = `rewarding-proofs-campaign-${Date.now()}.json`;
+    a.click();
+    toast("Proof data downloaded","success");
+}
+
+function copyCampaignLink() {
+    const id = document.getElementById("wlCampaignId").value.trim();
+    if (!id) { toast("Enter campaign ID first","error"); return; }
+    navigator.clipboard.writeText(`${location.origin}${location.pathname}#campaign=${id}`);
+    toast("Claim link copied","success");
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  CLAIMING
+// ─────────────────────────────────────────────────────────────────────────────
+let _activeClaim = null;
+
+function openClaimModal(campaignId, mode, amount) {
+    _activeClaim = { campaignId, mode, amount };
+    const isMerkle = mode === 0;
+    document.getElementById("claimProofField").classList.toggle("hidden", !isMerkle);
+    document.getElementById("claimAmountField").classList.toggle("hidden", !isMerkle);
+    document.getElementById("claimModalSub").textContent = isMerkle
+        ? `Campaign #${campaignId} — Merkle proof required`
+        : `Campaign #${campaignId} — Your allocation: ${formatTokenAmount(BigInt(amount.toString()))}`;
+    document.getElementById("claimModal").classList.add("open");
+}
+
+function closeModal(id) {
+    document.getElementById(id).classList.remove("open");
+}
+
+async function confirmClaim() {
+    if (!_activeClaim) return;
+    if (!STATE.signer) { toast("Connect wallet","error"); return; }
+    setBtnLoading("claimConfirmBtn","claimConfirmText",true);
+    const { campaignId, mode } = _activeClaim;
+    try {
+        if (mode === 0) {
+            // Merkle claim
+            const proofRaw = document.getElementById("claimProofInput").value.trim();
+            const amount   = document.getElementById("claimAllocInput").value.trim();
+            if (!proofRaw || !amount) { toast("Enter proof and amount","error"); return; }
+            const proof = JSON.parse(proofRaw);
+            const tx = await STATE.contract.claimMerkle(campaignId, BigInt(amount), proof);
+            toast("Claiming…","info");
+            await tx.wait();
+        } else {
+            const tx = await STATE.contract.claimDirect(campaignId);
+            toast("Claiming…","info");
+            await tx.wait();
+        }
+        toast("Tokens claimed successfully! 🎉","success");
+        closeModal("claimModal");
+        await loadAllCampaigns();
+    } catch(e) {
+        toast(e.reason || e.message || "Claim failed","error");
+    }
+    setBtnLoading("claimConfirmBtn","claimConfirmText",false,"Claim tokens");
+}
+
+async function checkCampaignEligibility() {
+    const id  = document.getElementById("claimCampaignId").value.trim();
+    const out = document.getElementById("claimEligibilityResult");
+    if (!id || !STATE.contract) { toast("Connect wallet and enter campaign ID","error"); return; }
+    try {
+        const raw = await STATE.contract.getCampaign(id);
+        const c   = formatCampaign(raw, id);
+        const claimed = await STATE.contract.hasClaimed(id, STATE.account);
+        let status;
+        if (claimed) {
+            status = `<div class="claim-status status-claimed">✔ Already claimed</div>`;
+        } else if (c.whitelistMode === 1) {
+            const alloc = await STATE.contract.directAllocation(id, STATE.account);
+            status = alloc > 0n
+                ? `<div class="claim-status status-eligible">✔ Eligible — ${formatTokenAmount(alloc)}</div>
+                   <button class="btn-primary btn-sm mt16" onclick="openClaimModal(${id},1,${alloc})">Claim now</button>`
+                : `<div class="claim-status status-not-eligible">Not in whitelist for this campaign</div>`;
+        } else {
+            status = `<div class="claim-status status-not-eligible">Merkle campaign — paste proof to claim</div>
+                      <button class="btn-primary btn-sm mt16" onclick="openClaimModal(${id},0,0)">Claim with proof</button>`;
+        }
+        out.innerHTML = `<div class="claim-card">
+          <div class="left">
+            <div style="font-weight:700;margin-bottom:4px">${esc(c.name)}</div>
+            <div class="text-sm text-muted mb16">Campaign #${id}</div>
+            ${status}
+          </div>
+          <div class="right">
+            <div class="claim-amount">${formatTokenAmount(c.totalAllocation)}</div>
+            <div class="text-xs text-muted">Total allocation</div>
+            <div class="mini-badge ${STATUS_CLASSES[c.status]}">${STATUS_LABELS[c.status]}</div>
+          </div>
+        </div>`;
+    } catch(e) {
+        out.innerHTML = `<div class="alert-warn alert">Campaign not found or error: ${e.message}</div>`;
+    }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  ADMIN
+// ─────────────────────────────────────────────────────────────────────────────
+async function checkAdminAccess() {
+    if (!STATE.contract || !STATE.account) return;
+    try {
+        const ADMIN_ROLE = ethers.keccak256(ethers.toUtf8Bytes("PLATFORM_ADMIN"));
+        const isAdmin = await STATE.contract.hasRole(ADMIN_ROLE, STATE.account);
+        document.getElementById("adminAccessWarn").classList.toggle("hidden", isAdmin);
+        document.getElementById("adminContent").classList.toggle("hidden", !isAdmin);
+    } catch {}
+}
+
+async function adminSetFee() {
+    const bps = document.getElementById("newFeeBps").value;
+    if (!bps) { toast("Enter fee basis points","error"); return; }
+    try {
+        const tx = await STATE.contract.setFee(Number(bps));
+        await tx.wait();
+        toast("Fee updated","success");
+        await loadPlatformData();
+    } catch(e) { toast(e.reason||e.message,"error"); }
+}
+
+async function adminPauseCampaign() {
+    const id = document.getElementById("adminCampaignId").value;
+    if (!id) { toast("Enter campaign ID","error"); return; }
+    try {
+        const tx = await STATE.contract.adminPauseCampaign(id);
+        await tx.wait();
+        toast(`Campaign #${id} paused`,"success");
+    } catch(e) { toast(e.reason||e.message,"error"); }
+}
+
+async function adminPausePlatform() {
+    if (!confirm("Pause entire platform? All claims will be blocked.")) return;
+    try {
+        const tx = await STATE.contract.pausePlatform();
+        await tx.wait();
+        toast("Platform paused","success");
+    } catch(e) { toast(e.reason||e.message,"error"); }
+}
+
+async function adminResumePlatform() {
+    try {
+        const tx = await STATE.contract.resumePlatform();
+        await tx.wait();
+        toast("Platform resumed","success");
+    } catch(e) { toast(e.reason||e.message,"error"); }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  NAVIGATION
+// ─────────────────────────────────────────────────────────────────────────────
+function showPage(name) {
+    document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+    const el = document.getElementById("page-" + name);
+    if (el) el.classList.add("active");
+    STATE.currentPage = name;
+    document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
+
+    // Handle hash-based campaign links
+    if (name === "claim") {
+        const hash = location.hash;
+        const m = hash.match(/campaign=(\d+)/);
+        if (m) {
+            document.getElementById("claimCampaignId").value = m[1];
+            checkCampaignEligibility();
+        }
+    }
+    window.scrollTo(0, 0);
+}
+
+function dashTab(tab) {
+    document.querySelectorAll(".sidebar-item").forEach(i => i.classList.remove("active"));
+    event.currentTarget.classList.add("active");
+}
+
+// Handle incoming hash links
+window.addEventListener("load", () => {
+    const hash = location.hash;
+    if (hash.includes("campaign=")) {
+        showPage("claim");
+    }
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  TOAST
+// ─────────────────────────────────────────────────────────────────────────────
+function toast(msg, type="info") {
+    const icons = { success:"✔", error:"✕", info:"ℹ" };
+    const el = document.createElement("div");
+    el.className = `toast-item ${type}`;
+    el.innerHTML = `<span>${icons[type]||"•"}</span> ${msg}`;
+    el.onclick = () => el.remove();
+    document.getElementById("toast").appendChild(el);
+    setTimeout(() => el.remove(), 5000);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  HELPERS
+// ─────────────────────────────────────────────────────────────────────────────
+function shortAddr(addr) {
+    if (!addr || addr === "0x0000000000000000000000000000000000000000") return "Native";
+    return addr.slice(0,6) + "…" + addr.slice(-4);
+}
+
+function formatTokenAmount(wei) {
+    if (wei === undefined || wei === null) return "—";
+    const bn = BigInt(wei.toString());
+    const formatted = Number(bn) / 1e18;
+    if (formatted >= 1_000_000) return (formatted/1_000_000).toFixed(2) + "M";
+    if (formatted >= 1_000)     return (formatted/1_000).toFixed(2) + "K";
+    return formatted.toFixed(2);
+}
+
+function timeLeft(endTs) {
+    const now  = Math.floor(Date.now()/1000);
+    const diff = endTs - now;
+    if (diff <= 0) return "Ended";
+    if (diff < 3600)  return Math.floor(diff/60) + "m left";
+    if (diff < 86400) return Math.floor(diff/3600) + "h left";
+    return Math.floor(diff/86400) + "d left";
+}
+
+function esc(str) {
+    if (!str) return "";
+    return str.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+
+function setText(id, val) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = val;
+}
+
+function setBtnLoading(btnId, textId, loading, resetText="") {
+    const btn  = document.getElementById(btnId);
+    const text = document.getElementById(textId);
+    if (loading) {
+        btn.disabled = true;
+        text.innerHTML = '<span class="spinner"></span> Processing…';
+    } else {
+        btn.disabled = false;
+        text.textContent = resetText;
+    }
+}
+</script>
+</body>
+</html>
